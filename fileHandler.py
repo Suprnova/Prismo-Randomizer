@@ -1,28 +1,22 @@
 import os
 
-def readFiles(dir, fileList):
+from azure.storage.file import FileService
+
+def readFiles(fs: FileService, fileList):
+	shareEnumerator = fs.list_directories_and_files('prismo-unmodified')
 	files = {}
-	for area in fileList:
-		path = dir + area
-		openFile = open(path, "r+", encoding="latin-1", newline='')
-		files[area] = openFile.readlines()
+	for file in shareEnumerator:
+		if (file.name in fileList):
+			pakFile = fs.get_file_to_text('prismo-unmodified', None, file.name, 'latin-1')
+			files[file.name] = pakFile.content.splitlines(True)
 	return files
 
-def writeFiles(dir, files):
+def writeFiles(fs: FileService, files, identifier):
+	fs.create_directory('prismo-unmodified', identifier)
 	for key in files:
-		path = dir + key
-		openFile = open(path, "r+", encoding="latin-1", newline='')
-		openFile.seek(0)
-		openFile.truncate(0)
-		for line in files[key]:
-			openFile.write(line)
-		openFile.close()
+		fs.create_file_from_text('prismo-unmodified', identifier, key, ''.join(files[key]), 'latin-1')
 	return
 
-def writeLog(spoilerLog):
-	logPath = os.getcwd() + "\\spoiler.log" 
-	log = open(logPath, 'w')
-	for entry in spoilerLog:
-		log.write(str(entry))
-	print("Log saved to ", logPath)
-	log.close()
+def writeLog(fs: FileService, spoilerLog, identifier):
+	log = ''.join(spoilerLog)
+	fs.create_file_from_text('prismo-unmodified', identifier, 'spoilerLog.txt', log)

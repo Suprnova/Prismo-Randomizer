@@ -1,14 +1,20 @@
 import argparse
+import os
 
+from azure.storage.file import FileService
+from dotenv import load_dotenv
 from options import parseOptions
 from randomizer import randomize
 
+load_dotenv()
+
+fs = FileService(account_name=os.getenv('AZURE_FILESHARE_NAME'), account_key=os.getenv('AZURE_FILESHARE_KEY'))
 prefs = {}
 
 # List of files to be randomized within data folder
-fileList = ["\\overworld_forest_cave.pak", "\\overworld_forest_cave_2.pak", "\\overworld_forest_master.pak", "\\overworld_iceking_cave.pak",
-			"\\overworld_kingdom_master.pak", "\\overworld_mountain_cave_1.pak", "\\overworld_mountain_cave_3.pak", "\\overworld_mountain_cave_4.pak", "\\overworld_mountain_master.pak", "\\overworld_swamp_master.pak",
-			"\\overworld_wasteland_cave_1.pak", "\\temple_dream_master.pak", "\\temple_fear_master.pak", "\\temple_song_master.pak"]
+fileList = ["overworld_forest_cave.pak", "overworld_forest_cave_2.pak", "overworld_forest_master.pak", "overworld_iceking_cave.pak",
+			"overworld_kingdom_master.pak", "overworld_mountain_cave_1.pak", "overworld_mountain_cave_3.pak", "overworld_mountain_cave_4.pak", "overworld_mountain_master.pak", "overworld_swamp_master.pak",
+			"overworld_wasteland_cave_1.pak", "temple_dream_master.pak", "temple_fear_master.pak", "temple_song_master.pak"]
 
 # Files that could be in fileList but are currently excluded
 #fileListExtras = ["\\castle_nightmare_master.pak", "\\global.pak", "\\overworld_lsp_cave.pak", "\\castle_basement_master.pak"]
@@ -108,6 +114,4 @@ parser.add_argument("-bsmt", "--castle-basement-randomization", help="Randomize 
 
 prefs, log, spoilerLog, itemList = parseOptions(parser.parse_args(), defaultItemList, fileList, itemListExpanded)
 
-randomize(prefs["dir"], prefs, fileList, spoilerLog, itemList, itemLocal, itemListReplaced, NPCList, NPCList2, NPCLocal)
-
-input("Randomization complete! Press enter or exit the window to close.")
+randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListReplaced, NPCList, NPCList2, NPCLocal)

@@ -1,14 +1,13 @@
-import os
 import random
+import time
 
 from fileHandler import readFiles, writeFiles, writeLog
 
 # Builds local item pool while replacing items with placeholder text to be changed into randomized items; placeholder text named to have length of 19
-def randomize(dir, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpanded, NPCList, NPCList2, NPCLocal):
+def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpanded, NPCList, NPCList2, NPCLocal):
 	random.seed(prefs["customSeed"])
-	files = readFiles(dir, fileList)
+	files = readFiles(fs, fileList)
 	for key in files:
-		print("Now generating pool from:", dir + key)
 		lines = files[key]
 		areaClean = key.lstrip("\\").rstrip(".pak") + ": \n"
 		c = 0
@@ -79,7 +78,6 @@ def randomize(dir, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExp
 # Writing to files
 		if prefs["spoilerLog"] == 1:
 			spoilerLog.append( "\n")
-		print("Successfully pooled from", dir + key)
 
 # Uses expanded item pool if selected
 	if prefs["itemRandomization"] == 2:
@@ -243,8 +241,9 @@ def randomize(dir, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExp
 						NPCLocal.remove(NPCLocal[randomNumber])
 					j += 1
 				c += 1
-	writeFiles(dir, files)
+	identifier = str(round(time.time() * 1000))
+	writeFiles(fs, files, identifier)
 	print("Your seed is: ", prefs["customSeed"])
 	if prefs["spoilerLog"] == 1:
-		writeLog(spoilerLog)
+		writeLog(fs, spoilerLog, identifier)
 	return
