@@ -1,12 +1,13 @@
 import random
-import time
 
-from fileHandler import readFiles, writeFiles, writeLog
+from . import fileHandler
 
 # Builds local item pool while replacing items with placeholder text to be changed into randomized items; placeholder text named to have length of 19
 def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpanded, NPCList, NPCList2, NPCLocal):
+	files, existsAlready = fileHandler.readFiles(fs, fileList, prefs["customSeed"])
+	if existsAlready:
+		return prefs["customSeed"]
 	random.seed(prefs["customSeed"])
-	files = readFiles(fs, fileList)
 	for key in files:
 		lines = files[key]
 		areaClean = key.lstrip("\\").rstrip(".pak") + ": \n"
@@ -48,7 +49,6 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 						replacement = lines[c].replace(item, placeholder, 1)
 						lines[c] = replacement.lstrip('')
 						location = lines[c]
-						print("Added", item, "to item pool")
 						if prefs["spoilerLog"] == 1:
 							i = item + " ->  "
 							spoilerLog.append(i)
@@ -68,7 +68,6 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 						replacement = lines[c].replace(nonplay, placeholder)
 						lines[c] = replacement.lstrip('')
 						location = lines[c]
-						print("Added", nonplay[:19], "to NPC pool")
 						if prefs["spoilerLog"] == 1:
 							n = nonplay[:19] + " ->  "
 							spoilerLog.append(n)
@@ -162,8 +161,6 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 								replacement = lines[c].replace(tempPlaceholder, itemLocal[randomNumber], 1)
 								lines[c] = replacement.lstrip(' ')
 								location = lines[c]
-								print("Replaced placeholder with", itemLocal[randomNumber])
-								print("Dry tree worky")
 								if prefs["spoilerLog"] == 1:
 									for entry in spoilerLog:
 										if entry == areaClean:
@@ -185,8 +182,6 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 							replacement = lines[c].replace(tempPlaceholder, itemLocal[randomNumber], 1)
 							lines[c] = replacement.lstrip(' ')
 							location = lines[c]
-							print("Replaced placeholder with", itemLocal[randomNumber])
-							print("Heavy rock worky")
 							if prefs["spoilerLog"] == 1:
 								for entry in spoilerLog:
 									if entry == areaClean:
@@ -206,7 +201,6 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 						replacement = lines[c].replace(tempPlaceholder, itemLocal[randomNumber], 1)
 						lines[c] = replacement.lstrip(' ')
 						location = lines[c]
-						print("Replaced placeholder with", itemLocal[randomNumber])
 						if prefs["spoilerLog"] == 1:
 							for entry in spoilerLog:
 								if entry == areaClean:
@@ -230,7 +224,6 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 						replacement = lines[c].replace(tempPlaceholder, NPCLocal[randomNumber], 1)
 						lines[c] = replacement.lstrip(' ')
 						location = lines[c]
-						print("Replaced placeholder with", NPCLocal[randomNumber][:19])
 						if prefs["spoilerLog"] == 1:
 							for entry in spoilerLog:
 								if entry == areaClean:
@@ -241,9 +234,7 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 						NPCLocal.remove(NPCLocal[randomNumber])
 					j += 1
 				c += 1
-	identifier = str(round(time.time() * 1000))
-	writeFiles(fs, files, identifier)
-	print("Your seed is: ", prefs["customSeed"])
+	fileHandler.writeFiles(fs, files, prefs["customSeed"])
 	if prefs["spoilerLog"] == 1:
-		writeLog(fs, spoilerLog, identifier)
-	return
+		fileHandler.writeLog(fs, spoilerLog, prefs["customSeed"])
+	return prefs["customSeed"]
