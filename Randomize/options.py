@@ -25,11 +25,10 @@ def parseOptions(req: func.HttpRequest, defaultItemList, fileList, itemListExpan
 		prefs["spoilerLog"] = 0
 	if body.get('lspCaveRandomization') == 1:
 		prefs["lspCaveRando"] = 1
-		fileList.append("\\overworld_lsp_cave.pak")
+		fileList.append("overworld_lsp_cave.pak")
 	if body.get('nightmareCastleRandomization') == 1:
-		fileList.append("\\castle_nightmare_master.pak")
-		# itemListExpanded.remove(itemListExpanded.index("PickupSweater\0\0\0\0\0\0"))
-		# this just crashes and i dont feel like fixing it rn
+		fileList.append("castle_nightmare_master.pak")
+		itemListExpanded.remove("PickupSweater\0\0\0\0\0\0")
 	if body.get('castleBasementRandomization') == 1:
-		fileList.append("\\castle_basement_master.pak")
-	return prefs, spoilerLog, itemList
+		fileList.append("castle_basement_master.pak")
+	return prefs, spoilerLog, itemList, fileList

@@ -4,9 +4,7 @@ from . import fileHandler
 
 # Builds local item pool while replacing items with placeholder text to be changed into randomized items; placeholder text named to have length of 19
 def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpanded, NPCList, NPCList2, NPCLocal):
-	files, existsAlready = fileHandler.readFiles(fs, fileList, prefs["customSeed"])
-	if existsAlready:
-		return prefs["customSeed"]
+	files = fileHandler.readFiles(fs, fileList)
 	random.seed(prefs["customSeed"])
 	for key in files:
 		lines = files[key]
@@ -234,7 +232,5 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 						NPCLocal.remove(NPCLocal[randomNumber])
 					j += 1
 				c += 1
-	fileHandler.writeFiles(fs, files, prefs["customSeed"])
-	if prefs["spoilerLog"] == 1:
-		fileHandler.writeLog(fs, spoilerLog, prefs["customSeed"])
-	return prefs["customSeed"]
+	body = fileHandler.createResponseBody(files, spoilerLog, prefs["spoilerLog"])
+	return body

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -76,9 +77,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     itemList = []
 
-    prefs, spoilerLog, itemList = options.parseOptions(req, defaultItemList, fileList, itemListExpanded)
+    prefs, spoilerLog, itemList, fileList = options.parseOptions(req, defaultItemList, fileList, itemListExpanded)
 
-    identifier = randomizer.randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListReplaced, NPCList, NPCList2, NPCLocal)
+    body = randomizer.randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListReplaced, NPCList, NPCList2, NPCLocal)
 
-    return func.HttpResponse(identifier)
+    return func.HttpResponse(json.dumps(body), mimetype="application/json", status_code=200)
 
