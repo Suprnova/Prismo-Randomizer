@@ -81,7 +81,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     prefs, spoilerLog, itemList, fileList = options.parseOptions(req, defaultItemList, fileList, itemListExpanded)
 
-    body = randomizer.randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListReplaced, NPCList, NPCList2, NPCLocal)
+    body = randomizer.randomize(fs, prefs, sorted(fileList), spoilerLog, itemList, itemLocal, itemListExpanded, NPCList, NPCList2, NPCLocal)
 
     return func.HttpResponse(json.dumps(body), mimetype="application/json", status_code=200)
 

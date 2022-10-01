@@ -78,12 +78,12 @@ def randomize(fs, prefs, fileList, spoilerLog, itemList, itemLocal, itemListExpa
 
 # Uses expanded item pool if selected
 	if prefs["itemRandomization"] == 2:
-				while len(itemListExpanded) != 0:
-					fillerSpot = itemLocal.index("PickupChestItemKey\0")
-					fillerReplace = itemListExpanded[random.randint(0, len(itemListExpanded)-1)]
-					replacement = itemLocal[fillerSpot].replace("PickupChestItemKey\0", fillerReplace)
-					itemLocal[fillerSpot] = replacement
-					itemListExpanded.remove(fillerReplace)
+		while len(itemListExpanded) != 0:
+			fillerSpot = itemLocal.index("PickupChestItemKey\0")
+			fillerReplace = itemListExpanded[random.randint(0, len(itemListExpanded)-1)]
+			replacement = itemLocal[fillerSpot].replace("PickupChestItemKey\0", fillerReplace)
+			itemLocal[fillerSpot] = replacement
+			itemListExpanded.remove(fillerReplace)
 # If Guntsanity is enabled, replaces all NPCs within pool with Gunter
 	if prefs["npcRandomization"] == 3:
 		c = 0
